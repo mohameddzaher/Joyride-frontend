@@ -146,7 +146,7 @@ export function Hero() {
             {/* Background Image */}
             <div className="absolute inset-0">
               <Image
-                src={currentBanner.image?.url || '/images/hero-placeholder.jpg'}
+                src={currentBanner.image?.url || '/images/logo.png'}
                 alt={currentBanner.title}
                 fill
                 className="object-cover"
