@@ -1,0 +1,10 @@
+export { Hero } from './Hero';
+export { HeroBackground } from './HeroBackground';
+export { FeaturedProducts } from './FeaturedProducts';
+export { Categories } from './Categories';
+export { DealsSection } from './DealsSection';
+export { Features } from './Features';
+export { Newsletter } from './Newsletter';
+export { Testimonials } from './Testimonials';
+export { Brands } from './Brands';
+export { WhyChooseUs } from './WhyChooseUs';

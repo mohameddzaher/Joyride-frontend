@@ -1,0 +1,15 @@
+import type { Metadata } from 'next';
+import PressPageContent from '@/components/PressPageContent';
+
+export const metadata: Metadata = {
+  title: 'Press & Media | Joyride',
+  description: 'Joyride press and media resources. Company facts, press releases, media inquiries, and brand assets for Saudi Arabia\'s leading home toy e-commerce platform.',
+  openGraph: {
+    title: 'Press & Media | Joyride',
+    description: 'Latest news and media resources from Joyride.',
+  },
+};
+
+export default function PressPage() {
+  return <PressPageContent />;
+}

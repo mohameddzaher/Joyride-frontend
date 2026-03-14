@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+dist/
+.env
+.env.local
+.env.development
+.DS_Store
+*.tsbuildinfo
+packages/shared/dist/
+packages/shared/node_modules/
