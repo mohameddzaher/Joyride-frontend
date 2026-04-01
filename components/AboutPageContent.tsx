@@ -9,7 +9,7 @@ import {
   HiOutlineHeart,
   HiOutlineRefresh,
 } from 'react-icons/hi';
-import { FaLinkedin, FaSnapchatGhost } from 'react-icons/fa';
+import { FaLinkedin, FaSnapchatGhost, FaInstagram, FaTiktok } from 'react-icons/fa';
 import { useQuery } from '@tanstack/react-query';
 import { Button, Card } from '@/components/ui';
 import { useI18n } from '@/lib/i18n';
@@ -23,11 +23,26 @@ interface TeamMember {
   image: string;
   linkedinUrl?: string;
   snapchatUrl?: string;
+  instagramUrl?: string;
+  tiktokUrl?: string;
 }
 
 interface AboutStat {
   value: string;
-  labelKey: string;
+  label: string;
+}
+
+interface AboutValue {
+  titleAr: string;
+  titleEn: string;
+  descriptionAr: string;
+  descriptionEn: string;
+}
+
+interface AboutStory {
+  titleAr: string;
+  titleEn: string;
+  paragraphs: { ar: string; en: string }[];
 }
 
 const defaultTeam: TeamMember[] = [
@@ -39,6 +54,8 @@ const defaultTeam: TeamMember[] = [
     image: '/images/founders/mohamed-zaher.png',
     linkedinUrl: '',
     snapchatUrl: '',
+    instagramUrl: '',
+    tiktokUrl: '',
   },
   {
     nameAr: 'ليان خالدي',
@@ -48,15 +65,25 @@ const defaultTeam: TeamMember[] = [
     image: '/images/founders/layan-khaledi.png',
     linkedinUrl: '',
     snapchatUrl: '',
+    instagramUrl: '',
+    tiktokUrl: '',
   },
 ];
 
 const defaultStats: AboutStat[] = [
-  { value: '1K+', labelKey: 'about.statsHappy' },
-  { value: '500+', labelKey: 'about.statsProducts' },
-  { value: '30+', labelKey: 'about.statsBrands' },
-  { value: '4.8', labelKey: 'about.statsRating' },
+  { value: '1K+', label: 'عملاء سعداء' },
+  { value: '500+', label: 'منتجات' },
+  { value: '30+', label: 'علامات تجارية' },
+  { value: '4.8', label: 'تقييم العملاء' },
 ];
+
+const defaultStory: AboutStory = {
+  titleAr: '',
+  titleEn: '',
+  paragraphs: [],
+};
+
+const defaultValues: AboutValue[] = [];
 
 export default function AboutPageContent() {
   const { t, locale } = useI18n();
@@ -70,6 +97,18 @@ export default function AboutPageContent() {
   const { data: statsCmsData } = useQuery({
     queryKey: ['cms-about-stats'],
     queryFn: () => cmsApi.getContent('about_stats'),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: storyCmsData } = useQuery({
+    queryKey: ['cms-about-story'],
+    queryFn: () => cmsApi.getContent('about_story'),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: valuesCmsData } = useQuery({
+    queryKey: ['cms-about-values'],
+    queryFn: () => cmsApi.getContent('about_values'),
     staleTime: 5 * 60 * 1000,
   });
 
@@ -93,32 +132,67 @@ export default function AboutPageContent() {
     // use defaults
   }
 
-  const values = [
-    {
-      icon: HiOutlineShieldCheck,
-      title: t('about.value1Title'),
-      description: t('about.value1Desc'),
-    },
-    {
-      icon: HiOutlineTruck,
-      title: t('about.value2Title'),
-      description: t('about.value2Desc'),
-    },
-    {
-      icon: HiOutlineHeart,
-      title: t('about.value3Title'),
-      description: t('about.value3Desc'),
-    },
-    {
-      icon: HiOutlineRefresh,
-      title: t('about.value4Title'),
-      description: t('about.value4Desc'),
-    },
-  ];
+  let storyData: AboutStory = defaultStory;
+  try {
+    if (storyCmsData?.value) {
+      const parsed = typeof storyCmsData.value === 'string' ? JSON.parse(storyCmsData.value) : storyCmsData.value;
+      if (parsed && typeof parsed === 'object') storyData = parsed;
+    }
+  } catch {
+    // use defaults
+  }
+
+  let valuesData: AboutValue[] = defaultValues;
+  try {
+    if (valuesCmsData?.value) {
+      const parsed = typeof valuesCmsData.value === 'string' ? JSON.parse(valuesCmsData.value) : valuesCmsData.value;
+      if (Array.isArray(parsed) && parsed.length > 0) valuesData = parsed;
+    }
+  } catch {
+    // use defaults
+  }
+
+  const iconMap = [HiOutlineShieldCheck, HiOutlineTruck, HiOutlineHeart, HiOutlineRefresh];
+
+  const values = valuesData.length > 0
+    ? valuesData.map((v, i) => ({
+        icon: iconMap[i % iconMap.length],
+        title: locale === 'ar' ? v.titleAr : v.titleEn,
+        description: locale === 'ar' ? v.descriptionAr : v.descriptionEn,
+      }))
+    : [
+        {
+          icon: HiOutlineShieldCheck,
+          title: t('about.value1Title'),
+          description: t('about.value1Desc'),
+        },
+        {
+          icon: HiOutlineTruck,
+          title: t('about.value2Title'),
+          description: t('about.value2Desc'),
+        },
+        {
+          icon: HiOutlineHeart,
+          title: t('about.value3Title'),
+          description: t('about.value3Desc'),
+        },
+        {
+          icon: HiOutlineRefresh,
+          title: t('about.value4Title'),
+          description: t('about.value4Desc'),
+        },
+      ];
+
+  const storyTitle = storyData.titleAr || storyData.titleEn
+    ? (locale === 'ar' ? storyData.titleAr : storyData.titleEn)
+    : null;
+  const storyParagraphs = storyData.paragraphs.length > 0
+    ? storyData.paragraphs.map((p) => (locale === 'ar' ? p.ar : p.en))
+    : null;
 
   const stats = statsData.map((s) => ({
     value: s.value,
-    label: t(s.labelKey),
+    label: s.label,
   }));
 
   return (
@@ -155,12 +229,19 @@ export default function AboutPageContent() {
               viewport={{ once: true }}
             >
               <h2 className="text-3xl font-display font-semibold text-dark-900 mb-6">
-                {t('about.storyTitle')}
+                {storyTitle || t('about.storyTitle')}
               </h2>
               <div className="space-y-4 text-dark-600">
-                <p>{t('about.storyP1')}</p>
-                <p>{t('about.storyP2')}</p>
-                <p>{t('about.storyP3')}</p>
+                {storyParagraphs
+                  ? storyParagraphs.map((p, i) => <p key={i}>{p}</p>)
+                  : (
+                    <>
+                      <p>{t('about.storyP1')}</p>
+                      <p>{t('about.storyP2')}</p>
+                      <p>{t('about.storyP3')}</p>
+                    </>
+                  )
+                }
               </div>
               <div className="mt-8">
                 <Link href="/products">
@@ -319,6 +400,28 @@ export default function AboutPageContent() {
                       className="text-dark-400 hover:text-primary-600 transition-colors"
                     >
                       <FaSnapchatGhost size={20} />
+                    </a>
+                  )}
+                  {member.instagramUrl && (
+                    <a
+                      href={member.instagramUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Instagram - ${locale === 'ar' ? member.nameAr : member.nameEn}`}
+                      className="text-dark-400 hover:text-primary-600 transition-colors"
+                    >
+                      <FaInstagram size={20} />
+                    </a>
+                  )}
+                  {member.tiktokUrl && (
+                    <a
+                      href={member.tiktokUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`TikTok - ${locale === 'ar' ? member.nameAr : member.nameEn}`}
+                      className="text-dark-400 hover:text-primary-600 transition-colors"
+                    >
+                      <FaTiktok size={20} />
                     </a>
                   )}
                 </div>

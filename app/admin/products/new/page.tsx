@@ -32,7 +32,7 @@ const productSchema = z.object({
   sku: z.string().min(1, 'SKU is required'),
   stockQuantity: z.number().min(0, 'Stock cannot be negative'),
   categoryId: z.string().min(1, 'Category is required'),
-  brand: z.string().min(1, 'Brand is required'),
+  brand: z.string().optional(),
   warranty: z.string().optional(),
   isActive: z.boolean(),
   isFeatured: z.boolean(),

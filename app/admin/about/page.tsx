@@ -7,11 +7,13 @@ import { Button, Input, Card } from '@/components/ui';
 import { cmsApi, adminApi } from '@/lib/api';
 import toast from 'react-hot-toast';
 
-type SectionKey = 'about_team_members' | 'about_stats';
+type SectionKey = 'about_team_members' | 'about_stats' | 'about_story' | 'about_values';
 
 const sections: { key: SectionKey; label: string }[] = [
   { key: 'about_team_members', label: 'Team Members' },
   { key: 'about_stats', label: 'Stats' },
+  { key: 'about_story', label: 'Story / Mission' },
+  { key: 'about_values', label: 'Values' },
 ];
 
 export default function AboutContentPage() {
@@ -28,7 +30,7 @@ export default function AboutContentPage() {
       <div>
         <h1 className="text-2xl font-semibold text-dark-900">About Page Content</h1>
         <p className="text-dark-500 mt-1">
-          Manage team members and stats displayed on the About page.
+          Manage team members, stats, story, and values displayed on the About page.
         </p>
       </div>
 
@@ -61,6 +63,12 @@ export default function AboutContentPage() {
           )}
           {activeTab === 'about_stats' && (
             <StatsEditor data={cmsData?.about_stats} />
+          )}
+          {activeTab === 'about_story' && (
+            <StoryEditor data={cmsData?.about_story} />
+          )}
+          {activeTab === 'about_values' && (
+            <ValuesEditor data={cmsData?.about_values} />
           )}
         </>
       )}
@@ -104,6 +112,8 @@ interface TeamMember {
   image: string;
   linkedinUrl: string;
   snapchatUrl: string;
+  instagramUrl: string;
+  tiktokUrl: string;
 }
 
 const defaultTeam: TeamMember[] = [
@@ -115,6 +125,8 @@ const defaultTeam: TeamMember[] = [
     image: '',
     linkedinUrl: '',
     snapchatUrl: '',
+    instagramUrl: '',
+    tiktokUrl: '',
   },
 ];
 
@@ -143,7 +155,7 @@ function TeamMembersEditor({ data }: { data: any }) {
           onClick={() =>
             setItems([
               ...items,
-              { nameAr: '', nameEn: '', roleAr: '', roleEn: '', image: '', linkedinUrl: '', snapchatUrl: '' },
+              { nameAr: '', nameEn: '', roleAr: '', roleEn: '', image: '', linkedinUrl: '', snapchatUrl: '', instagramUrl: '', tiktokUrl: '' },
             ])
           }
         >
@@ -237,6 +249,24 @@ function TeamMembersEditor({ data }: { data: any }) {
                 placeholder="https://snapchat.com/add/..."
               />
             </div>
+            <div>
+              <label className="block text-xs font-medium text-dark-500 mb-1">Instagram URL</label>
+              <input
+                className="w-full px-3 py-2 border border-beige-300 rounded-lg text-sm"
+                value={item.instagramUrl}
+                onChange={(e) => updateItem(i, 'instagramUrl', e.target.value)}
+                placeholder="https://instagram.com/..."
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-dark-500 mb-1">TikTok URL</label>
+              <input
+                className="w-full px-3 py-2 border border-beige-300 rounded-lg text-sm"
+                value={item.tiktokUrl}
+                onChange={(e) => updateItem(i, 'tiktokUrl', e.target.value)}
+                placeholder="https://tiktok.com/@..."
+              />
+            </div>
           </div>
         </div>
       ))}
@@ -252,14 +282,14 @@ function TeamMembersEditor({ data }: { data: any }) {
 
 interface AboutStat {
   value: string;
-  labelKey: string;
+  label: string;
 }
 
 const defaultStats: AboutStat[] = [
-  { value: '1K+', labelKey: 'about.statsHappy' },
-  { value: '500+', labelKey: 'about.statsProducts' },
-  { value: '30+', labelKey: 'about.statsBrands' },
-  { value: '4.8', labelKey: 'about.statsRating' },
+  { value: '1K+', label: 'عملاء سعداء' },
+  { value: '500+', label: 'منتجات' },
+  { value: '30+', label: 'علامات تجارية' },
+  { value: '4.8', label: 'تقييم العملاء' },
 ];
 
 function StatsEditor({ data }: { data: any }) {
@@ -278,14 +308,14 @@ function StatsEditor({ data }: { data: any }) {
           size="sm"
           variant="outline"
           leftIcon={<HiOutlinePlus size={16} />}
-          onClick={() => setItems([...items, { value: '', labelKey: '' }])}
+          onClick={() => setItems([...items, { value: '', label: '' }])}
         >
           Add Stat
         </Button>
       </div>
 
       <p className="text-xs text-dark-400">
-        The label key should match a translation key (e.g. about.statsHappy). The value is displayed as-is (e.g. 1K+, 500+, 4.8).
+        Enter the label as plain text (e.g. عملاء سعداء / Happy Customers). The value is displayed as-is (e.g. 1K+, 500+, 4.8).
       </p>
 
       {items.map((item, i) => (
@@ -306,16 +336,16 @@ function StatsEditor({ data }: { data: any }) {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-dark-500 mb-1">Label Key</label>
+                <label className="block text-xs font-medium text-dark-500 mb-1">Label</label>
                 <input
                   className="w-full px-3 py-2 border border-beige-300 rounded-lg text-sm"
-                  value={item.labelKey}
+                  value={item.label}
                   onChange={(e) => {
                     const n = [...items];
-                    n[i] = { ...n[i], labelKey: e.target.value };
+                    n[i] = { ...n[i], label: e.target.value };
                     setItems(n);
                   }}
-                  placeholder="e.g. about.statsHappy"
+                  placeholder="e.g. عملاء سعداء / Happy Customers"
                 />
               </div>
             </div>
@@ -333,6 +363,238 @@ function StatsEditor({ data }: { data: any }) {
 
       <Button leftIcon={<HiOutlineSave size={16} />} onClick={() => save.mutate(items)} isLoading={save.isPending}>
         Save Stats
+      </Button>
+    </Card>
+  );
+}
+
+// ========== STORY / MISSION EDITOR ==========
+
+interface StoryData {
+  titleAr: string;
+  titleEn: string;
+  paragraphs: { ar: string; en: string }[];
+}
+
+const defaultStory: StoryData = {
+  titleAr: '',
+  titleEn: '',
+  paragraphs: [{ ar: '', en: '' }],
+};
+
+function StoryEditor({ data }: { data: any }) {
+  const [story, setStory] = useState<StoryData>(defaultStory);
+  const save = useSaveContent('about_story');
+
+  useEffect(() => {
+    const parsed = parseCmsValue(data, defaultStory);
+    setStory({ ...defaultStory, ...parsed, paragraphs: parsed.paragraphs?.length ? parsed.paragraphs : defaultStory.paragraphs });
+  }, [data]);
+
+  const updateParagraph = (index: number, lang: 'ar' | 'en', value: string) => {
+    const updated = [...story.paragraphs];
+    updated[index] = { ...updated[index], [lang]: value };
+    setStory({ ...story, paragraphs: updated });
+  };
+
+  return (
+    <Card padding="lg" className="space-y-4">
+      <h3 className="font-semibold text-dark-900">Story / Mission Section</h3>
+      <p className="text-xs text-dark-400">
+        Edit the story/mission title and paragraphs. Leave empty to use the default translation keys.
+      </p>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label className="block text-xs font-medium text-dark-500 mb-1">Title (English)</label>
+          <input
+            className="w-full px-3 py-2 border border-beige-300 rounded-lg text-sm"
+            value={story.titleEn}
+            onChange={(e) => setStory({ ...story, titleEn: e.target.value })}
+            placeholder="e.g. Our Story"
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-dark-500 mb-1">Title (Arabic)</label>
+          <input
+            className="w-full px-3 py-2 border border-beige-300 rounded-lg text-sm"
+            dir="rtl"
+            value={story.titleAr}
+            onChange={(e) => setStory({ ...story, titleAr: e.target.value })}
+            placeholder="e.g. قصتنا"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-medium text-dark-700">Paragraphs</label>
+          <Button
+            size="sm"
+            variant="outline"
+            leftIcon={<HiOutlinePlus size={16} />}
+            onClick={() => setStory({ ...story, paragraphs: [...story.paragraphs, { ar: '', en: '' }] })}
+          >
+            Add Paragraph
+          </Button>
+        </div>
+
+        {story.paragraphs.map((p, i) => (
+          <div key={i} className="p-4 bg-beige-50 rounded-lg space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-dark-500">Paragraph {i + 1}</span>
+              <button
+                type="button"
+                onClick={() => setStory({ ...story, paragraphs: story.paragraphs.filter((_, j) => j !== i) })}
+                className="text-red-500 hover:text-red-700 p-1"
+                title="Remove"
+              >
+                <HiOutlineX size={18} />
+              </button>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-dark-500 mb-1">English</label>
+              <textarea
+                className="w-full px-3 py-2 border border-beige-300 rounded-lg text-sm"
+                rows={3}
+                value={p.en}
+                onChange={(e) => updateParagraph(i, 'en', e.target.value)}
+                placeholder="Paragraph text in English..."
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-dark-500 mb-1">Arabic</label>
+              <textarea
+                className="w-full px-3 py-2 border border-beige-300 rounded-lg text-sm"
+                rows={3}
+                dir="rtl"
+                value={p.ar}
+                onChange={(e) => updateParagraph(i, 'ar', e.target.value)}
+                placeholder="نص الفقرة بالعربي..."
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <Button leftIcon={<HiOutlineSave size={16} />} onClick={() => save.mutate(story)} isLoading={save.isPending}>
+        Save Story
+      </Button>
+    </Card>
+  );
+}
+
+// ========== VALUES EDITOR ==========
+
+interface AboutValue {
+  titleAr: string;
+  titleEn: string;
+  descriptionAr: string;
+  descriptionEn: string;
+}
+
+const defaultValuesAdmin: AboutValue[] = [
+  { titleAr: '', titleEn: '', descriptionAr: '', descriptionEn: '' },
+];
+
+function ValuesEditor({ data }: { data: any }) {
+  const [items, setItems] = useState<AboutValue[]>([]);
+  const save = useSaveContent('about_values');
+
+  useEffect(() => {
+    const parsed = parseCmsValue(data, defaultValuesAdmin);
+    setItems(Array.isArray(parsed) && parsed.length > 0 ? parsed : defaultValuesAdmin);
+  }, [data]);
+
+  const updateItem = (index: number, field: keyof AboutValue, value: string) => {
+    const updated = [...items];
+    updated[index] = { ...updated[index], [field]: value };
+    setItems(updated);
+  };
+
+  return (
+    <Card padding="lg" className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="font-semibold text-dark-900">Values</h3>
+        <Button
+          size="sm"
+          variant="outline"
+          leftIcon={<HiOutlinePlus size={16} />}
+          onClick={() =>
+            setItems([...items, { titleAr: '', titleEn: '', descriptionAr: '', descriptionEn: '' }])
+          }
+        >
+          Add Value
+        </Button>
+      </div>
+
+      <p className="text-xs text-dark-400">
+        Edit the value cards shown on the About page. Icons are assigned automatically in order (shield, truck, heart, refresh). Leave empty to use the default translation keys.
+      </p>
+
+      {items.map((item, i) => (
+        <div key={i} className="p-4 bg-beige-50 rounded-lg space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-dark-700">
+              Value {i + 1}{item.titleEn ? ` - ${item.titleEn}` : ''}
+            </span>
+            <button
+              type="button"
+              onClick={() => setItems(items.filter((_, j) => j !== i))}
+              className="text-red-500 hover:text-red-700 p-1"
+              title="Remove"
+            >
+              <HiOutlineX size={18} />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-dark-500 mb-1">Title (English)</label>
+              <input
+                className="w-full px-3 py-2 border border-beige-300 rounded-lg text-sm"
+                value={item.titleEn}
+                onChange={(e) => updateItem(i, 'titleEn', e.target.value)}
+                placeholder="e.g. Quality Assurance"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-dark-500 mb-1">Title (Arabic)</label>
+              <input
+                className="w-full px-3 py-2 border border-beige-300 rounded-lg text-sm"
+                dir="rtl"
+                value={item.titleAr}
+                onChange={(e) => updateItem(i, 'titleAr', e.target.value)}
+                placeholder="e.g. ضمان الجودة"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-dark-500 mb-1">Description (English)</label>
+              <textarea
+                className="w-full px-3 py-2 border border-beige-300 rounded-lg text-sm"
+                rows={2}
+                value={item.descriptionEn}
+                onChange={(e) => updateItem(i, 'descriptionEn', e.target.value)}
+                placeholder="Description in English..."
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-dark-500 mb-1">Description (Arabic)</label>
+              <textarea
+                className="w-full px-3 py-2 border border-beige-300 rounded-lg text-sm"
+                rows={2}
+                dir="rtl"
+                value={item.descriptionAr}
+                onChange={(e) => updateItem(i, 'descriptionAr', e.target.value)}
+                placeholder="الوصف بالعربي..."
+              />
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <Button leftIcon={<HiOutlineSave size={16} />} onClick={() => save.mutate(items)} isLoading={save.isPending}>
+        Save Values
       </Button>
     </Card>
   );

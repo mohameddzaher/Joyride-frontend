@@ -3,7 +3,7 @@
 import { useState, useEffect, Fragment } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Dialog, Transition, Popover } from '@headlessui/react';
 import { useQuery } from '@tanstack/react-query';
@@ -31,6 +31,7 @@ const TOTAL_HEADER_HEIGHT = TOP_BAR_HEIGHT + MAIN_NAV_HEIGHT; // 96px on desktop
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { settings } = useSettings();
   const { locale, setLocale, t } = useI18n();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -385,13 +386,16 @@ export function Navbar() {
                               </Link>
                               {(user?.role === 'admin' ||
                                 user?.role === 'super_admin') && (
-                                <Link
-                                  href="/admin"
-                                  onClick={() => close()}
-                                  className="block px-3 py-2 text-sm text-primary-600 font-medium hover:bg-primary-50 rounded-lg"
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    close();
+                                    router.push('/admin');
+                                  }}
+                                  className="block w-full text-left px-3 py-2 text-sm text-primary-600 font-medium hover:bg-primary-50 rounded-lg"
                                 >
                                   {t('nav.adminPanel')}
-                                </Link>
+                                </button>
                               )}
                             </div>
                             <div className="p-2 border-t border-beige-200">
@@ -656,6 +660,15 @@ export function Navbar() {
                       >
                         {t('nav.referEarn')}
                       </Link>
+                      {(user?.role === 'admin' ||
+                        user?.role === 'super_admin') && (
+                        <Link
+                          href="/admin"
+                          className="block px-4 py-2.5 text-sm font-medium text-primary-600 hover:bg-primary-50 rounded-lg"
+                        >
+                          {t('nav.adminPanel')}
+                        </Link>
+                      )}
                       <button
                         type="button"
                         onClick={() => {

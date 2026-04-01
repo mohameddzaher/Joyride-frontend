@@ -8,6 +8,7 @@ import {
   WhyChooseUs,
   DealsSection,
   Testimonials,
+  HomeFAQs,
   Newsletter,
 } from '@/components/home';
 
@@ -23,6 +24,7 @@ export default function HomePage() {
       <WhyChooseUs />
       <DealsSection />
       <Testimonials />
+      <HomeFAQs />
       <Newsletter />
     </>
   );

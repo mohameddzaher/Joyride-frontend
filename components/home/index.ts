@@ -9,3 +9,4 @@ export { Newsletter } from './Newsletter';
 export { Testimonials } from './Testimonials';
 export { Brands } from './Brands';
 export { WhyChooseUs } from './WhyChooseUs';
+export { HomeFAQs } from './HomeFAQs';

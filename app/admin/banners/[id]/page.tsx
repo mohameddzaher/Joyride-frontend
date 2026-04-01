@@ -160,6 +160,7 @@ export default function EditBannerPage() {
                   className="w-full px-4 py-2 border border-beige-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   {...register('position')}
                 >
+                  <option value="top_banner">Top Banner (Above Hero)</option>
                   <option value="hero_main">Hero Main</option>
                   <option value="hero_secondary">Hero Secondary</option>
                   <option value="home_middle">Home Middle</option>
