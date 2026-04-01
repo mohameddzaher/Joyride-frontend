@@ -1,4 +1,5 @@
 import {
+  TopBanner,
   Hero,
   Features,
   Brands,
@@ -13,6 +14,7 @@ import {
 export default function HomePage() {
   return (
     <>
+      <TopBanner />
       <Hero />
       <Features />
       <Brands />

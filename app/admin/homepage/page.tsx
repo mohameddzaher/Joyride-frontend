@@ -191,7 +191,7 @@ function WhyChooseUsEditor({ data }: { data: any }) {
     title: 'The Joyride Difference',
     description: 'We are committed to providing you with the best shopping experience for premium therapeutic toys.',
     reasons: [] as Array<{ icon: string; title: string; description: string }>,
-    cta: { title: 'Still Have Questions?', description: '', phone: '+966 50 123 4567', buttonText: 'Send a Message', buttonLink: '/contact' },
+    cta: { title: 'Still Have Questions?', description: '', phone: '', buttonText: 'Send a Message', buttonLink: '/contact' },
   };
 
   const [content, setContent] = useState(defaultVal);

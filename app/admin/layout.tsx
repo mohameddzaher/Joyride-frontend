@@ -28,6 +28,7 @@ import {
   HiOutlineCalculator,
   HiOutlineGlobe,
   HiOutlineTemplate,
+  HiOutlineUserGroup,
 } from 'react-icons/hi';
 import { useAuthStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
@@ -52,6 +53,7 @@ const operationsNav = [
 
 const marketingNav = [
   { name: 'Homepage', href: '/admin/homepage', icon: HiOutlineTemplate },
+  { name: 'About Page', href: '/admin/about', icon: HiOutlineUserGroup },
   { name: 'Offers', href: '/admin/offers', icon: HiOutlineTag },
   { name: 'Banners', href: '/admin/banners', icon: HiOutlinePhotograph },
   { name: 'Blog', href: '/admin/blog', icon: HiOutlineDocumentText },

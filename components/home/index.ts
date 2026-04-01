@@ -1,3 +1,4 @@
+export { TopBanner } from './TopBanner';
 export { Hero } from './Hero';
 export { HeroBackground } from './HeroBackground';
 export { FeaturedProducts } from './FeaturedProducts';

@@ -215,7 +215,7 @@ export default function ContactPageContent() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Input
                     label={t('contact.phoneLabel')}
-                    placeholder={settings.sitePhone || '+966 50 123 4567'}
+                    placeholder={settings.sitePhone || ''}
                     error={errors.phone?.message}
                     {...register('phone')}
                   />

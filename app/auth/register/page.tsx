@@ -204,7 +204,7 @@ export default function RegisterPage() {
             <Input
               label={t('register.phoneLabel')}
               type="tel"
-              placeholder="+966 50 123 4567"
+              placeholder=""
               leftIcon={<HiOutlinePhone size={18} />}
               error={errors.phone?.message}
               {...register('phone')}

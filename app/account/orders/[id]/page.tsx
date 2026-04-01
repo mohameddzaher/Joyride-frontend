@@ -167,8 +167,8 @@ export default function OrderDetailPage() {
   <div class="invoice">
     <div class="header">
       <div>
-        <div class="logo">PRI<span class="logo-accent">MO</span></div>
-        <p style="margin:4px 0 0;opacity:0.7;font-size:13px;">Premium Shopping Experience</p>
+        <div class="logo">JOY<span class="logo-accent">RIDE</span></div>
+        <p style="margin:4px 0 0;opacity:0.7;font-size:13px;">Kids Toys & Educational Games</p>
       </div>
       <div class="invoice-title">
         <h2>INVOICE</h2>

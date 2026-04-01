@@ -4,9 +4,11 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { cmsApi } from '@/lib/api';
 import { useI18n } from '@/lib/i18n';
+import { useSettings } from '@/lib/settings-context';
 
 export function WhyChooseUs() {
   const { t } = useI18n();
+  const { settings } = useSettings();
 
   const defaultData = {
     badge: t('whyChooseUs.badge'),
@@ -117,12 +119,14 @@ export function WhyChooseUs() {
             {content.cta.description}
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-4">
-            <a
-              href={`tel:${content.cta.phone.replace(/\s/g, '')}`}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-white text-primary-600 rounded-lg font-medium hover:bg-white/90 transition-colors"
-            >
-              {content.cta.phone}
-            </a>
+            {settings.sitePhone && (
+              <a
+                href={`tel:${settings.sitePhone.replace(/\s/g, '')}`}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-white text-primary-600 rounded-lg font-medium hover:bg-white/90 transition-colors"
+              >
+                {settings.sitePhone}
+              </a>
+            )}
             <a
               href={content.cta.buttonLink}
               className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-colors border border-white/20"

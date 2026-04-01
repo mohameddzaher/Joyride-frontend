@@ -9,26 +9,89 @@ import {
   HiOutlineHeart,
   HiOutlineRefresh,
 } from 'react-icons/hi';
+import { FaLinkedin, FaSnapchatGhost } from 'react-icons/fa';
+import { useQuery } from '@tanstack/react-query';
 import { Button, Card } from '@/components/ui';
 import { useI18n } from '@/lib/i18n';
+import { cmsApi } from '@/lib/api';
 
-const team = [
+interface TeamMember {
+  nameAr: string;
+  nameEn: string;
+  roleAr: string;
+  roleEn: string;
+  image: string;
+  linkedinUrl?: string;
+  snapchatUrl?: string;
+}
+
+interface AboutStat {
+  value: string;
+  labelKey: string;
+}
+
+const defaultTeam: TeamMember[] = [
   {
-    name: 'Nader Magdy',
-    image: '/images/founders/naderr.png',
+    nameAr: 'محمد زاهر',
+    nameEn: 'Mohamed Zaher',
+    roleAr: 'شريك مؤسس والرئيس التنفيذي',
+    roleEn: 'Co-Founder & CEO',
+    image: '/images/founders/mohamed-zaher.png',
+    linkedinUrl: '',
+    snapchatUrl: '',
   },
   {
-    name: 'Mohamed Mghawry',
-    image: '/images/founders/mohamedd.png',
-  },
-  {
-    name: 'Mai El Ziny',
-    image: '/images/founders/maii.png',
+    nameAr: 'ليان خالدي',
+    nameEn: 'Layan Khaledi',
+    roleAr: 'شريك مؤسس ومدير العمليات',
+    roleEn: 'Co-Founder & COO',
+    image: '/images/founders/layan-khaledi.png',
+    linkedinUrl: '',
+    snapchatUrl: '',
   },
 ];
 
+const defaultStats: AboutStat[] = [
+  { value: '1K+', labelKey: 'about.statsHappy' },
+  { value: '500+', labelKey: 'about.statsProducts' },
+  { value: '30+', labelKey: 'about.statsBrands' },
+  { value: '4.8', labelKey: 'about.statsRating' },
+];
+
 export default function AboutPageContent() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+
+  const { data: teamCmsData } = useQuery({
+    queryKey: ['cms-about-team-members'],
+    queryFn: () => cmsApi.getContent('about_team_members'),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: statsCmsData } = useQuery({
+    queryKey: ['cms-about-stats'],
+    queryFn: () => cmsApi.getContent('about_stats'),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  let team: TeamMember[] = defaultTeam;
+  try {
+    if (teamCmsData?.value) {
+      const parsed = typeof teamCmsData.value === 'string' ? JSON.parse(teamCmsData.value) : teamCmsData.value;
+      if (Array.isArray(parsed) && parsed.length > 0) team = parsed;
+    }
+  } catch {
+    // use defaults
+  }
+
+  let statsData: AboutStat[] = defaultStats;
+  try {
+    if (statsCmsData?.value) {
+      const parsed = typeof statsCmsData.value === 'string' ? JSON.parse(statsCmsData.value) : statsCmsData.value;
+      if (Array.isArray(parsed) && parsed.length > 0) statsData = parsed;
+    }
+  } catch {
+    // use defaults
+  }
 
   const values = [
     {
@@ -53,12 +116,10 @@ export default function AboutPageContent() {
     },
   ];
 
-  const stats = [
-    { value: '50K+', label: t('about.statsHappy') },
-    { value: '10K+', label: t('about.statsProducts') },
-    { value: '100+', label: t('about.statsBrands') },
-    { value: '4.8', label: t('about.statsRating') },
-  ];
+  const stats = statsData.map((s) => ({
+    value: s.value,
+    label: t(s.labelKey),
+  }));
 
   return (
     <div className="min-h-screen bg-beige-50">
@@ -212,7 +273,7 @@ export default function AboutPageContent() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div className={`grid grid-cols-1 ${team.length === 2 ? 'md:grid-cols-2 max-w-2xl' : 'md:grid-cols-3 max-w-4xl'} gap-8 mx-auto`}>
             {team.map((member, index) => (
               <motion.div
                 key={index}
@@ -225,13 +286,42 @@ export default function AboutPageContent() {
                 <div className="w-32 h-32 rounded-full mx-auto mb-4 overflow-hidden bg-beige-100">
                   <Image
                     src={member.image}
-                    alt={member.name}
+                    alt={locale === 'ar' ? member.nameAr : member.nameEn}
                     width={128}
                     height={128}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <h3 className="font-semibold text-dark-900">{member.name}</h3>
+                <h3 className="font-semibold text-dark-900">
+                  {locale === 'ar' ? member.nameAr : member.nameEn}
+                </h3>
+                <p className="text-sm text-dark-500 mt-1">
+                  {locale === 'ar' ? member.roleAr : member.roleEn}
+                </p>
+                <div className="flex items-center justify-center gap-3 mt-3">
+                  {member.linkedinUrl && (
+                    <a
+                      href={member.linkedinUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`LinkedIn - ${locale === 'ar' ? member.nameAr : member.nameEn}`}
+                      className="text-dark-400 hover:text-primary-600 transition-colors"
+                    >
+                      <FaLinkedin size={20} />
+                    </a>
+                  )}
+                  {member.snapchatUrl && (
+                    <a
+                      href={member.snapchatUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Snapchat - ${locale === 'ar' ? member.nameAr : member.nameEn}`}
+                      className="text-dark-400 hover:text-primary-600 transition-colors"
+                    >
+                      <FaSnapchatGhost size={20} />
+                    </a>
+                  )}
+                </div>
               </motion.div>
             ))}
           </div>

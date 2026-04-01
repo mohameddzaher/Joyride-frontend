@@ -431,7 +431,7 @@ export default function CheckoutPage() {
                   <Input
                     label="Phone Number"
                     type="tel"
-                    placeholder="+966 50 123 4567"
+                    placeholder=""
                     error={errors.phone?.message}
                     {...register('phone')}
                   />
