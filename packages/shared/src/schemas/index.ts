@@ -283,9 +283,9 @@ export const updateOfferSchema = createOfferSchema.partial();
 export const createBannerSchema = z.object({
   title: z.string().min(1).max(100),
   subtitle: z.string().max(200).optional(),
-  image: z.string().url(),
-  mobileImage: z.string().url().optional(),
-  link: z.string().url().optional(),
+  image: z.string().min(1),
+  mobileImage: z.string().optional(),
+  link: z.string().optional(),
   linkText: z.string().max(50).optional(),
   position: z.enum([
     'hero_main',
@@ -294,6 +294,7 @@ export const createBannerSchema = z.object({
     'home_bottom',
     'category_top',
     'product_sidebar',
+    'top_banner',
   ]),
   backgroundColor: z.string().optional(),
   textColor: z.string().optional(),
