@@ -35,22 +35,32 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       isAuthenticated: false,
       isLoading: true,
-      setUser: (user) => set({
-        user: user ? {
+      setUser: (user) => {
+        const formattedUser = user ? {
           ...user,
           name: (user.firstName || user.lastName)
             ? `${user.firstName || ''} ${user.lastName || ''}`.trim()
             : user.name || user.email,
-        } : null,
-        isAuthenticated: !!user,
-        isLoading: false,
-      }),
+        } : null;
+        set({
+          user: formattedUser,
+          isAuthenticated: !!user,
+          isLoading: false,
+        });
+        // Persist access token flag so we know to try refresh on reload
+        if (user) {
+          try { localStorage.setItem('joyride-has-session', '1'); } catch {}
+        } else {
+          try { localStorage.removeItem('joyride-has-session'); } catch {}
+        }
+      },
       setLoading: (isLoading) => set({ isLoading }),
       logout: () => {
         // Call backend to clear refresh token cookie
         authApi.logout().catch(() => {});
         setAccessToken(null);
         set({ user: null, isAuthenticated: false });
+        try { localStorage.removeItem('joyride-has-session'); } catch {}
         // Clear all persisted stores on logout
         useCartStore.getState().clearCart();
         useWishlistStore.getState().clearWishlist();

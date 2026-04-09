@@ -92,11 +92,13 @@ api.interceptors.response.use(
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
           return api(originalRequest);
         }
-      } catch (refreshError) {
+      } catch (refreshError: any) {
         processQueue(refreshError, null);
-        // Refresh failed - clear token
-        setAccessToken(null);
-        // Don't redirect to login for unauthenticated users browsing public pages
+        // Only clear token on real auth failure (401/403), not network errors
+        const status = refreshError?.response?.status;
+        if (status === 401 || status === 403) {
+          setAccessToken(null);
+        }
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

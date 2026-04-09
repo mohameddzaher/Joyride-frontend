@@ -15,7 +15,7 @@ interface ProvidersProps {
 }
 
 function AuthProvider({ children }: { children: ReactNode }) {
-  const { setUser, setLoading } = useAuthStore();
+  const { user, setUser, setLoading } = useAuthStore();
   const initRef = useRef(false);
 
   useEffect(() => {
@@ -24,23 +24,39 @@ function AuthProvider({ children }: { children: ReactNode }) {
     initRef.current = true;
 
     const initAuth = async () => {
+      // Check if user had a session before (survives page refresh)
+      const hadSession = typeof window !== 'undefined' &&
+        (localStorage.getItem('joyride-has-session') === '1' || user !== null);
+
+      if (!hadSession) {
+        // Never logged in, skip refresh attempt
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       try {
-        // Try to refresh the token and get user data
+        // Try to refresh the token using the httpOnly cookie
         const { accessToken } = await authApi.refresh();
         setAccessToken(accessToken);
-        const user = await authApi.getMe();
-        setUser(user);
-      } catch (error) {
-        // Not authenticated, that's fine
-        setUser(null);
-      } finally {
-        setLoading(false);
+        const freshUser = await authApi.getMe();
+        setUser(freshUser);
+      } catch (error: any) {
+        // Only clear user if it's a real auth failure (401), not a network/CORS error
+        const status = error?.response?.status;
+        if (status === 401 || status === 403) {
+          // Token truly expired or revoked
+          setUser(null);
+        } else {
+          // Network error, CORS, server down - keep the cached user from localStorage
+          // so the UI doesn't flash to logged-out state
+          setLoading(false);
+        }
       }
     };
 
     initAuth();
-  }, [setUser, setLoading]);
+  }, [setUser, setLoading, user]);
 
   return <>{children}</>;
 }
