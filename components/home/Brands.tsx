@@ -6,17 +6,17 @@ import { useQuery } from '@tanstack/react-query';
 import { brandsApi } from '@/lib/api';
 import { useI18n } from '@/lib/i18n';
 
-// Fallback brands shown while API loads (matches actual store brands)
+// Fallback brands shown while API loads (matches actual store brands with their logos)
 const fallbackBrands = [
-  { name: 'Classic World', logo: '' },
-  { name: 'Fat Brain Toy', logo: '' },
-  { name: 'Hape', logo: '' },
-  { name: 'Learning Resources', logo: '' },
-  { name: 'Melissa & Doug', logo: '' },
-  { name: 'Mideer', logo: '' },
-  { name: 'Montessori', logo: '' },
-  { name: 'Tooky Toy', logo: '' },
-  { name: 'Top Bright', logo: '' },
+  { name: 'Classic World', logo: 'https://res.cloudinary.com/ddxp3sday/image/upload/v1775506502/download_3_xmyfzy.png' },
+  { name: 'Fat Brain Toy', logo: 'https://res.cloudinary.com/ddxp3sday/image/upload/v1775508053/fat_vwkbgo.webp' },
+  { name: 'Hape', logo: 'https://res.cloudinary.com/ddxp3sday/image/upload/v1775507847/fg_zojpgv.jpg' },
+  { name: 'Learning Resources', logo: 'https://res.cloudinary.com/ddxp3sday/image/upload/v1775508062/learn_t4lmwz.png' },
+  { name: 'Melissa & Doug', logo: 'https://res.cloudinary.com/ddxp3sday/image/upload/v1775507837/download_2_vff_arnnbd.png' },
+  { name: 'Mideer', logo: 'https://res.cloudinary.com/ddxp3sday/image/upload/v1775506610/download_4_iwmafw.png' },
+  { name: 'Montessori', logo: 'https://res.cloudinary.com/ddxp3sday/image/upload/v1775506889/download_5o_boy4ns.png' },
+  { name: 'Tooky Toy', logo: 'https://res.cloudinary.com/ddxp3sday/image/upload/v1775506370/download_1_alhuqc.png' },
+  { name: 'Top Bright', logo: 'https://res.cloudinary.com/ddxp3sday/image/upload/v1775506107/download_uvmazh.png' },
 ];
 
 // Resolve logo: use API logo if it's a valid URL/path
