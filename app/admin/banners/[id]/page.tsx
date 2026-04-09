@@ -51,10 +51,11 @@ export default function EditBannerPage() {
   const updateMutation = useMutation({
     mutationFn: (data: BannerForm) => {
       const payload: any = { ...data };
-      if (!payload.mobileImage) delete payload.mobileImage;
-      if (!payload.link) delete payload.link;
-      if (!payload.startsAt) delete payload.startsAt;
-      if (!payload.endsAt) delete payload.endsAt;
+      // Remove empty optional fields so they don't overwrite existing values
+      const optionalFields = ['mobileImage', 'startsAt', 'endsAt'];
+      for (const f of optionalFields) {
+        if (!payload[f]) delete payload[f];
+      }
       return adminApi.updateBanner(bannerId, payload);
     },
     onSuccess: () => {
@@ -78,11 +79,17 @@ export default function EditBannerPage() {
     if (banner) {
       reset({
         title: banner.title,
+        titleAr: banner.titleAr || '',
+        titleEn: banner.titleEn || '',
         subtitle: banner.subtitle || '',
+        subtitleAr: banner.subtitleAr || '',
+        subtitleEn: banner.subtitleEn || '',
         image: banner.image || '',
         mobileImage: banner.mobileImage || '',
         link: banner.link || '',
         linkText: banner.linkText || '',
+        linkTextAr: banner.linkTextAr || '',
+        linkTextEn: banner.linkTextEn || '',
         position: banner.position || 'hero_main',
         backgroundColor: banner.backgroundColor || '#ffffff',
         textColor: banner.textColor || '#000000',
