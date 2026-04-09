@@ -14,11 +14,17 @@ import toast from 'react-hot-toast';
 
 const bannerSchema = z.object({
   title: z.string().min(2, 'Title must be at least 2 characters'),
+  titleAr: z.string().optional(),
+  titleEn: z.string().optional(),
   subtitle: z.string().optional(),
-  image: z.string().url('Please enter a valid image URL'),
-  mobileImage: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
-  link: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
+  subtitleAr: z.string().optional(),
+  subtitleEn: z.string().optional(),
+  image: z.string().min(1, 'Image URL is required'),
+  mobileImage: z.string().optional().or(z.literal('')),
+  link: z.string().optional().or(z.literal('')),
   linkText: z.string().optional(),
+  linkTextAr: z.string().optional(),
+  linkTextEn: z.string().optional(),
   position: z.string(),
   backgroundColor: z.string().optional(),
   textColor: z.string().optional(),
@@ -114,16 +120,46 @@ export default function EditBannerPage() {
         <form onSubmit={handleSubmit((data) => updateMutation.mutate(data))} className="lg:col-span-2">
           <Card padding="lg" className="space-y-6">
             <Input
-              label="Banner Title"
+              label="Banner Title (Default / Fallback)"
               error={errors.title?.message}
               {...register('title')}
             />
 
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                label="Title (English)"
+                placeholder="Educational toys for kids"
+                {...register('titleEn')}
+              />
+              <Input
+                label="العنوان (عربي)"
+                placeholder="ألعاب تعليمية للأطفال"
+                dir="rtl"
+                {...register('titleAr')}
+              />
+            </div>
+
             <Textarea
-              label="Subtitle / Description"
+              label="Subtitle / Description (Default)"
               rows={2}
               {...register('subtitle')}
             />
+
+            <div className="grid grid-cols-2 gap-4">
+              <Textarea
+                label="Subtitle (English)"
+                rows={2}
+                placeholder="English subtitle..."
+                {...register('subtitleEn')}
+              />
+              <Textarea
+                label="الوصف (عربي)"
+                rows={2}
+                placeholder="الوصف بالعربي..."
+                dir="rtl"
+                {...register('subtitleAr')}
+              />
+            </div>
 
             <Input
               label="Image URL *"
@@ -141,13 +177,28 @@ export default function EditBannerPage() {
             <div className="grid grid-cols-2 gap-4">
               <Input
                 label="Link URL"
+                placeholder="/products or https://..."
                 error={errors.link?.message}
                 {...register('link')}
               />
 
               <Input
-                label="Link Text"
+                label="Link Text (Default)"
                 {...register('linkText')}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                label="Button Text (English)"
+                placeholder="Shop Now"
+                {...register('linkTextEn')}
+              />
+              <Input
+                label="نص الزر (عربي)"
+                placeholder="تسوق الآن"
+                dir="rtl"
+                {...register('linkTextAr')}
               />
             </div>
 

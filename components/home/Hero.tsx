@@ -109,17 +109,22 @@ export function Hero() {
   const quickCategories = localizeCmsArray(rawCategories, locale, { label: 'label' });
   const promos = localizeCmsArray(rawPromos, locale, { title: 'title', subtitle: 'subtitle' });
 
-  // Map database banners to the expected format
-  const mappedBanners = banners?.map((b: any) => ({
-    _id: b._id,
-    title: b.title,
-    subtitle: b.subtitle,
-    description: b.subtitle,
-    image: { url: b.image },
-    buttonText: b.linkText || t('common.shopNow'),
-    buttonLink: b.link || '/products',
-    backgroundColor: b.backgroundColor,
-  })) || [];
+  // Map database banners to the expected format with bilingual support
+  const mappedBanners = banners?.map((b: any) => {
+    const title = (locale === 'ar' ? b.titleAr : b.titleEn) || b.title;
+    const subtitle = (locale === 'ar' ? b.subtitleAr : b.subtitleEn) || b.subtitle;
+    const buttonText = (locale === 'ar' ? b.linkTextAr : b.linkTextEn) || b.linkText || t('common.shopNow');
+    return {
+      _id: b._id,
+      title,
+      subtitle,
+      description: subtitle,
+      image: { url: b.image },
+      buttonText,
+      buttonLink: b.link || '/products',
+      backgroundColor: b.backgroundColor,
+    };
+  }) || [];
 
   const slides = mappedBanners.length > 0 ? mappedBanners : defaultSlides;
 
