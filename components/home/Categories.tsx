@@ -10,12 +10,8 @@ import { queryKeys } from '@/lib/query-client';
 import { Skeleton } from '@/components/ui';
 import { useI18n } from '@/lib/i18n';
 
-const categoryImages: Record<string, string> = {
-  'kitchen-toys': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600',
-  'coffee-machines': 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600',
-  'small-toys': 'https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=600',
-  'home-essentials': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600',
-};
+// Fallback placeholder for categories without images
+const PLACEHOLDER_IMAGE = 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=600';
 
 export function Categories() {
   const { t } = useI18n();
@@ -76,7 +72,7 @@ export function Categories() {
                   {/* Background Image */}
                   <div className="absolute inset-0 bg-beige-200">
                     <Image
-                      src={category.image || categoryImages[category.slug] || categoryImages['home-essentials']}
+                      src={category.image || PLACEHOLDER_IMAGE}
                       alt={category.name}
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-110"
