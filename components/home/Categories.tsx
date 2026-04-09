@@ -76,7 +76,7 @@ export function Categories() {
                   {/* Background Image */}
                   <div className="absolute inset-0 bg-beige-200">
                     <Image
-                      src={category.image?.url || categoryImages[category.slug] || categoryImages['home-essentials']}
+                      src={category.image || categoryImages[category.slug] || categoryImages['home-essentials']}
                       alt={category.name}
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-110"

@@ -84,7 +84,7 @@ export const createStaffSchema = z.object({
   firstName: z.string().min(2).max(50),
   lastName: z.string().min(2).max(50),
   phone: z.string().optional(),
-  role: z.enum(['admin', 'staff']),
+  role: z.enum(['admin', 'staff', 'super_admin']),
   permissions: z.object({
     orders: z.object({ read: z.boolean(), write: z.boolean() }),
     products: z.object({ read: z.boolean(), write: z.boolean() }),
@@ -96,7 +96,9 @@ export const createStaffSchema = z.object({
   }),
 });
 
-export const updateStaffSchema = createStaffSchema.partial().omit({ password: true });
+export const updateStaffSchema = createStaffSchema.partial().extend({
+  password: z.string().min(8).optional(),
+});
 
 // ================== PRODUCT SCHEMAS ==================
 export const productImageSchema = z.object({

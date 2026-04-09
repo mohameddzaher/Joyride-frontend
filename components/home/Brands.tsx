@@ -6,38 +6,24 @@ import { useQuery } from '@tanstack/react-query';
 import { brandsApi } from '@/lib/api';
 import { useI18n } from '@/lib/i18n';
 
-// Local brand images mapping (name lowercase -> path)
-const localBrandImages: Record<string, string> = {
-  'melissa & doug': '/images/brands/melissa-doug.png',
-  'melissa and doug': '/images/brands/melissa-doug.png',
-  'fisher-price': '/images/brands/fisher-price.png',
-  'fisher price': '/images/brands/fisher-price.png',
-  lego: '/images/brands/lego.png',
-  hape: '/images/brands/hape.png',
-  'learning resources': '/images/brands/learning-resources.png',
-  vtech: '/images/brands/vtech.png',
-  playmobil: '/images/brands/playmobil.png',
-  hasbro: '/images/brands/hasbro.png',
-};
-
-// All brands with local images as fallback
+// Fallback brands shown when API hasn't loaded yet (text-only, no images needed)
 const fallbackBrands = [
-  { name: 'Melissa & Doug', logo: '/images/brands/melissa-doug.png' },
-  { name: 'Fisher-Price', logo: '/images/brands/fisher-price.png' },
-  { name: 'LEGO', logo: '/images/brands/lego.png' },
-  { name: 'Hape', logo: '/images/brands/hape.png' },
-  { name: 'Learning Resources', logo: '/images/brands/learning-resources.png' },
-  { name: 'VTech', logo: '/images/brands/vtech.png' },
-  { name: 'Playmobil', logo: '/images/brands/playmobil.png' },
-  { name: 'Hasbro', logo: '/images/brands/hasbro.png' },
+  { name: 'Melissa & Doug', logo: '' },
+  { name: 'Fisher-Price', logo: '' },
+  { name: 'LEGO', logo: '' },
+  { name: 'Hape', logo: '' },
+  { name: 'Learning Resources', logo: '' },
+  { name: 'VTech', logo: '' },
+  { name: 'Playmobil', logo: '' },
+  { name: 'Hasbro', logo: '' },
 ];
 
-// Resolve logo: use API logo if it's a valid URL/path, otherwise try local mapping
-function resolveLogo(name: string, apiLogo?: string): string {
+// Resolve logo: use API logo if it's a valid URL/path
+function resolveLogo(_name: string, apiLogo?: string): string {
   if (apiLogo && (apiLogo.startsWith('http') || apiLogo.startsWith('/images/'))) {
     return apiLogo;
   }
-  return localBrandImages[name.toLowerCase()] || '';
+  return '';
 }
 
 export function Brands() {

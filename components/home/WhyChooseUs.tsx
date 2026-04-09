@@ -7,7 +7,7 @@ import { useI18n } from '@/lib/i18n';
 import { useSettings } from '@/lib/settings-context';
 
 export function WhyChooseUs() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { settings } = useSettings();
 
   const defaultData = {
@@ -41,7 +41,27 @@ export function WhyChooseUs() {
   try {
     if (cmsData?.value) {
       const parsed = typeof cmsData.value === 'string' ? JSON.parse(cmsData.value) : cmsData.value;
-      if (parsed && parsed.reasons) content = { ...defaultData, ...parsed };
+      if (parsed && parsed.reasons) {
+        const isAr = locale === 'ar';
+        content = {
+          ...defaultData,
+          badge: (isAr ? parsed.badgeAr : parsed.badgeEn) || parsed.badge || defaultData.badge,
+          title: (isAr ? parsed.titleAr : parsed.titleEn) || parsed.title || defaultData.title,
+          description: (isAr ? parsed.descriptionAr : parsed.descriptionEn) || parsed.description || defaultData.description,
+          reasons: parsed.reasons.map((r: any) => ({
+            icon: r.icon,
+            title: (isAr ? r.titleAr : r.titleEn) || r.title || '',
+            description: (isAr ? r.descriptionAr : r.descriptionEn) || r.description || '',
+          })),
+          cta: {
+            title: (isAr ? parsed.cta?.titleAr : parsed.cta?.titleEn) || parsed.cta?.title || defaultData.cta.title,
+            description: (isAr ? parsed.cta?.descriptionAr : parsed.cta?.descriptionEn) || parsed.cta?.description || defaultData.cta.description,
+            phone: parsed.cta?.phone || defaultData.cta.phone,
+            buttonText: (isAr ? parsed.cta?.buttonTextAr : parsed.cta?.buttonTextEn) || parsed.cta?.buttonText || defaultData.cta.buttonText,
+            buttonLink: parsed.cta?.buttonLink || defaultData.cta.buttonLink,
+          },
+        };
+      }
     }
   } catch {
     // use defaults

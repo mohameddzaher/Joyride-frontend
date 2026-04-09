@@ -23,23 +23,29 @@ function parseCmsJson(cmsData: any, defaultVal: any) {
   return defaultVal;
 }
 
+// Resolve bilingual fields for an array of CMS items based on locale
+function localizeCmsArray(items: any[], locale: string, fieldMap: Record<string, string>) {
+  return items.map((item: any) => {
+    const localized = { ...item };
+    for (const [displayField, baseField] of Object.entries(fieldMap)) {
+      const enKey = baseField + 'En';
+      const arKey = baseField + 'Ar';
+      localized[displayField] = (locale === 'ar' ? item[arKey] : item[enKey]) || item[displayField] || '';
+    }
+    return localized;
+  });
+}
+
 export function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   const defaultQuickCategories = [
     { emoji: '🧠', label: t('quickCategories.sensory'), href: '/categories/sensory-toys' },
     { emoji: '✋', label: t('quickCategories.motor'), href: '/categories/fine-motor-skills' },
     { emoji: '💬', label: t('quickCategories.speech'), href: '/categories/speech-communication' },
     { emoji: '🧩', label: t('quickCategories.cognitive'), href: '/categories/cognitive-development' },
-  ];
-
-  const defaultTrustBadges = [
-    { icon: '🚚', title: t('trustBadges.freeShipping'), subtitle: t('trustBadges.freeShippingDesc') },
-    { icon: '🛡️', title: t('trustBadges.safetyFirst'), subtitle: t('trustBadges.safetyFirstDesc') },
-    { icon: '🔒', title: t('trustBadges.securePayment'), subtitle: t('trustBadges.securePaymentDesc') },
-    { icon: '👩‍⚕️', title: t('trustBadges.expertSupport'), subtitle: t('trustBadges.expertSupportDesc') },
   ];
 
   const defaultPromos = [
@@ -94,9 +100,14 @@ export function Hero() {
     staleTime: 5 * 60 * 1000,
   });
 
-  const quickCategories = parseCmsJson(cmsMultiple?.homepage_hero_categories, defaultQuickCategories);
-  const trustBadges = parseCmsJson(cmsMultiple?.homepage_hero_badges, defaultTrustBadges);
-  const promos = parseCmsJson(cmsMultiple?.homepage_hero_promos, defaultPromos);
+  const rawBadges = parseCmsJson(cmsMultiple?.homepage_hero_badges, defaultTrustBadges);
+  const rawCategories = parseCmsJson(cmsMultiple?.homepage_hero_categories, defaultQuickCategories);
+  const rawPromos = parseCmsJson(cmsMultiple?.homepage_hero_promos, defaultPromos);
+
+  // Resolve bilingual fields based on current locale
+  const trustBadges = localizeCmsArray(rawBadges, locale, { title: 'title', subtitle: 'subtitle' });
+  const quickCategories = localizeCmsArray(rawCategories, locale, { label: 'label' });
+  const promos = localizeCmsArray(rawPromos, locale, { title: 'title', subtitle: 'subtitle' });
 
   // Map database banners to the expected format
   const mappedBanners = banners?.map((b: any) => ({
@@ -307,22 +318,6 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Trust Badges Bar */}
-      <div className="bg-white border-b border-beige-200">
-        <div className="container-custom py-3">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {trustBadges.map((badge: any, index: number) => (
-              <div key={index} className="flex items-center gap-2">
-                <span className="text-lg flex-shrink-0">{badge.icon}</span>
-                <div>
-                  <p className="text-xs font-semibold text-dark-900">{badge.title}</p>
-                  <p className="text-[10px] text-dark-500">{badge.subtitle}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
     </section>
   );
 }

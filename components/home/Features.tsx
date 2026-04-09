@@ -21,11 +21,20 @@ export function Features() {
     staleTime: 5 * 60 * 1000,
   });
 
+  const { locale } = useI18n();
+
   let features = defaultFeatures;
   try {
     if (cmsData?.value) {
       const parsed = typeof cmsData.value === 'string' ? JSON.parse(cmsData.value) : cmsData.value;
-      if (Array.isArray(parsed) && parsed.length > 0) features = parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        // Map bilingual fields to the correct locale, falling back to old single-language fields
+        features = parsed.map((f: any) => ({
+          icon: f.icon,
+          title: (locale === 'ar' ? f.titleAr : f.titleEn) || f.title || '',
+          description: (locale === 'ar' ? f.descriptionAr : f.descriptionEn) || f.description || '',
+        }));
+      }
     }
   } catch {
     // use defaults
@@ -37,7 +46,7 @@ export function Features() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {features.map((feature: any, index: number) => (
             <motion.div
-              key={feature.title}
+              key={feature.title || index}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

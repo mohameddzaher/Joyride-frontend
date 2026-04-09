@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 export function Newsletter() {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   const defaultContent = {
     badge: t('newsletter.badge'),
@@ -38,7 +38,23 @@ export function Newsletter() {
   try {
     if (cmsData?.value) {
       const parsed = typeof cmsData.value === 'string' ? JSON.parse(cmsData.value) : cmsData.value;
-      if (parsed && parsed.title) content = { ...defaultContent, ...parsed };
+      if (parsed && (parsed.titleEn || parsed.title)) {
+        const isAr = locale === 'ar';
+        content = {
+          ...defaultContent,
+          badge: (isAr ? parsed.badgeAr : parsed.badgeEn) || parsed.badge || defaultContent.badge,
+          title: (isAr ? parsed.titleAr : parsed.titleEn) || parsed.title || defaultContent.title,
+          description: (isAr ? parsed.descriptionAr : parsed.descriptionEn) || parsed.description || defaultContent.description,
+          benefits: (parsed.benefits || []).map((b: any) => ({
+            icon: b.icon,
+            title: (isAr ? b.titleAr : b.titleEn) || b.title || '',
+            description: (isAr ? b.descriptionAr : b.descriptionEn) || b.description || '',
+          })),
+          formTitle: (isAr ? parsed.formTitleAr : parsed.formTitleEn) || parsed.formTitle || defaultContent.formTitle,
+          subscriberText: (isAr ? parsed.subscriberTextAr : parsed.subscriberTextEn) || parsed.subscriberText || defaultContent.subscriberText,
+          buttonText: (isAr ? parsed.buttonTextAr : parsed.buttonTextEn) || parsed.buttonText || defaultContent.buttonText,
+        };
+      }
     }
   } catch {
     // use defaults
