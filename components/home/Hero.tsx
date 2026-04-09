@@ -96,16 +96,14 @@ export function Hero() {
 
   const { data: cmsMultiple } = useQuery({
     queryKey: ['cms-hero-content'],
-    queryFn: () => cmsApi.getMultiple(['homepage_hero_badges', 'homepage_hero_categories', 'homepage_hero_promos']),
+    queryFn: () => cmsApi.getMultiple(['homepage_hero_categories', 'homepage_hero_promos']),
     staleTime: 5 * 60 * 1000,
   });
 
-  const rawBadges = parseCmsJson(cmsMultiple?.homepage_hero_badges, defaultTrustBadges);
   const rawCategories = parseCmsJson(cmsMultiple?.homepage_hero_categories, defaultQuickCategories);
   const rawPromos = parseCmsJson(cmsMultiple?.homepage_hero_promos, defaultPromos);
 
   // Resolve bilingual fields based on current locale
-  const trustBadges = localizeCmsArray(rawBadges, locale, { title: 'title', subtitle: 'subtitle' });
   const quickCategories = localizeCmsArray(rawCategories, locale, { label: 'label' });
   const promos = localizeCmsArray(rawPromos, locale, { title: 'title', subtitle: 'subtitle' });
 
