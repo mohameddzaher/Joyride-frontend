@@ -6,16 +6,17 @@ import { useQuery } from '@tanstack/react-query';
 import { brandsApi } from '@/lib/api';
 import { useI18n } from '@/lib/i18n';
 
-// Fallback brands shown when API hasn't loaded yet (text-only, no images needed)
+// Fallback brands shown while API loads (matches actual store brands)
 const fallbackBrands = [
-  { name: 'Melissa & Doug', logo: '' },
-  { name: 'Fisher-Price', logo: '' },
-  { name: 'LEGO', logo: '' },
+  { name: 'Classic World', logo: '' },
+  { name: 'Fat Brain Toy', logo: '' },
   { name: 'Hape', logo: '' },
   { name: 'Learning Resources', logo: '' },
-  { name: 'VTech', logo: '' },
-  { name: 'Playmobil', logo: '' },
-  { name: 'Hasbro', logo: '' },
+  { name: 'Melissa & Doug', logo: '' },
+  { name: 'Mideer', logo: '' },
+  { name: 'Montessori', logo: '' },
+  { name: 'Tooky Toy', logo: '' },
+  { name: 'Top Bright', logo: '' },
 ];
 
 // Resolve logo: use API logo if it's a valid URL/path
