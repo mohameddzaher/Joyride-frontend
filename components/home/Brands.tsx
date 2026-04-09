@@ -34,22 +34,15 @@ export function Brands() {
     staleTime: 5 * 60 * 1000,
   });
 
-  // Always start with all local brands, then merge any extra API brands
+  // Use API brands if available, otherwise show fallback text brands
   const brands = (() => {
-    const result = [...fallbackBrands];
     if (apiBrands && apiBrands.length > 0) {
-      const existingNames = new Set(result.map(b => b.name.toLowerCase()));
-      for (const b of apiBrands) {
-        if (!existingNames.has(b.name.toLowerCase())) {
-          const logo = resolveLogo(b.name, b.logo);
-          if (logo) {
-            result.push({ name: b.name, logo });
-            existingNames.add(b.name.toLowerCase());
-          }
-        }
-      }
+      return apiBrands.map((b: any) => ({
+        name: b.name,
+        logo: resolveLogo(b.name, b.logo),
+      }));
     }
-    return result;
+    return fallbackBrands;
   })();
 
   const duplicated = [...brands, ...brands];
